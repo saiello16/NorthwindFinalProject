@@ -74,3 +74,4 @@ document.addEventListener("DOMContentLoaded", function() {
       toast("Product Added", `${res.data.product.productName} successfully added to cart.`);
     });
   }
+  

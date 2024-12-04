@@ -22,7 +22,16 @@
                         <td>@item.Quantity</td>
                         <td>$@((item.Product.UnitPrice * item.Quantity).ToString("F2"))</td>
                         <td>
-                            <a asp-controller="Cart" asp-action="Remove" asp-route-id="@item.Product.ProductId" class="btn btn-danger">Remove</a>
+                             <form asp-action="UpdateQuantity" method="post">
+                                <input type="hidden" name="id" value="@item.CartItemId" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control" style="width: 70px; display: inline-block;" />
+                                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-action="Remove" asp-route-id="@item.CartItemId" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
                         </td>
                     </tr>
                 }
@@ -40,7 +49,9 @@
                     <input type="text" id="discountCode" class="form-control" />
                     <button id="applyDiscount" class="btn btn-secondary mt-2">Apply Discount</button>
                 </div>
-                <a asp-controller="Cart" asp-action="Checkout" class="btn btn-primary">Checkout</a>
+                 <form asp-action="Checkout" asp-controller="Cart" method="post">
+                    <button type="submit" class="btn btn-primary float-right m-3">Checkout</button>
+                </form>
             </div>
         </div>
     </div>

@@ -9,6 +9,8 @@ public class DataContext : DbContext
   public DbSet<Discount> Discounts { get; set; }
   public DbSet<Customer> Customers { get; set; }
   public DbSet<CartItem> CartItems { get; set; }
+  public DbSet<Order> Orders { get; set; }
+  public DbSet<OrderDetail> OrderDetails { get; set; }
 
   public void AddCustomer(Customer customer)
   {
@@ -54,14 +56,30 @@ public class DataContext : DbContext
     return cartItem;
   }
 
+  public int AddOrder(Order order) 
+  {
+    Orders.Add(order);
+    SaveChanges();
+    return order.OrderId;
+  }
+
+  public void AddOrderDetail(List<OrderDetail> details)
+  {
+    OrderDetails.AddRange(details);
+    SaveChanges();  
+  }
+
+  public void RemoveCartItems(int id)
+  {
+    var items = CartItems.Where(ci => ci.CustomerId == id).ToList();
+    CartItems.RemoveRange(items);
+    SaveChanges();
+  }
 
   public void RemoveFromCart(int id)
   {
-    CartItem cartItem = CartItems.Find(id);
-    if (cartItem != null)
-    {
-      CartItems.Remove(cartItem);
-      SaveChanges();
-    }
+    CartItem cartitem = CartItems.FirstOrDefault(ci => ci.CartItemId == id);
+    CartItems.Remove(cartitem);
+    SaveChanges();
   }
 }
