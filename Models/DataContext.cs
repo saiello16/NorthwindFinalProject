@@ -71,7 +71,7 @@ public class DataContext : DbContext
 
   public void RemoveCartItems(int id)
   {
-    var items = CartItems.Where(ci => ci.CustomerId == id).ToList();
+    var items = CartItems.Where(i => i.CustomerId == id).ToList();
     CartItems.RemoveRange(items);
     SaveChanges();
   }

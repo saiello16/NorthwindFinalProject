@@ -35,7 +35,7 @@ namespace Northwind.Controllers
         }
 
         [Authorize(Roles = "northwind-customer")]
-        public IActionResult UpdateQuantity(int id, int qauntity)
+        public IActionResult UpdateQuantity(int id, int quantity)
         {
             var cartItem = _dataContext.CartItems.Find(id);
             if (cartItem == null)
@@ -43,9 +43,9 @@ namespace Northwind.Controllers
                 return NotFound();
             }
 
-            if (qauntity > 0)
+            else if (quantity > 0)
             {
-                cartItem.Quantity = qauntity;
+                cartItem.Quantity = quantity;
             }
             else
             {

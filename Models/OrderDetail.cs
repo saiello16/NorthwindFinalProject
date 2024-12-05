@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class OrderDetail
 {
     [Key]
-    public int OrderDetailId { get; set; }
+    public int OrderDetailsId { get; set; }
     public int OrderId { get; set; }
     public int ProductId { get; set; }
     public int Quantity { get; set; }

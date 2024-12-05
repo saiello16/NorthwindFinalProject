@@ -29,8 +29,6 @@ namespace Northwind.Controllers
          [HttpPost, Route("api/addtocart")]
         // adds a row to the cartitem table
         public CartItem Post([FromBody] CartItemJSON cartItem) => _dataContext.AddToCart(cartItem);
-        // [HttpDelete, Route("api/remove/{CartItemId}")]
-        // // removes a row from the cartitem table
-        // public CartItem Delete(int cartItemId) => _dataContext.RemoveFromCart(cartItemId);
+        
     }
 }
