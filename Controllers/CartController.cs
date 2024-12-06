@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Northwind.Controllers
 {
+    
     public class CartController : Controller
     {
         private readonly DataContext _dataContext;
+        
         public CartController(DataContext db)
         {
             _dataContext = db;
@@ -57,6 +60,36 @@ namespace Northwind.Controllers
 
         [HttpPost]
         [Authorize(Roles = "northwind-customer")]
+        public IActionResult ApplyDiscount(int discountCode)
+        {
+            // first, find all cart items for the current user
+            var items = _dataContext.CartItems
+                    .Include(c => c.Product)
+                    .Where(c => c.Customer.Email == User.Identity.Name)
+                    .ToList();
+
+            // loop thru list of cart items and determine iof the code entered appluies to any produstcs in the cart
+            foreach (var item in items)
+            {
+                var product = _dataContext.Products.FirstOrDefault(p => p.ProductId == item.ProductId);
+                if (product != null)
+                {
+                    var productDiscount = _dataContext.Discounts.FirstOrDefault(d => d.Code == discountCode && d.ProductId == product.ProductId);
+                    if (productDiscount != null)
+                    {
+                        item.DiscountPercent = productDiscount.DiscountPercent;
+                        // update cart items table
+                        _dataContext.ApplyCartItemDiscount(item);
+                    }
+                    break;
+                }
+            }
+            // return to cart
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "northwind-customer")]
         public IActionResult Checkout()
         {
             try
@@ -89,11 +122,16 @@ namespace Northwind.Controllers
 
                 foreach (var item in items)
                 {
+                    decimal price = item.Product.UnitPrice;
+                    if (item.DiscountPercent != null){
+                        price -= (decimal)(item.DiscountPercent * item.Product.UnitPrice);
+                    }
                     OrderDetail orderDetail = new OrderDetail
                     {
                         OrderId = newOrder.OrderId,
                         ProductId = item.ProductId,
-                        UnitPrice = item.Product.UnitPrice,
+                        UnitPrice = price,
+                        Discount = (decimal)item.DiscountPercent,
                         Quantity = item.Quantity
                     };
                     _dataContext.OrderDetails.Add(orderDetail);
@@ -110,5 +148,6 @@ namespace Northwind.Controllers
                 return StatusCode(500, "Internal Server Error: " + ex.Message);
             }
         }   
+
     }
 }

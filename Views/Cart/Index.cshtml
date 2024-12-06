@@ -48,12 +48,14 @@
                 <h4 class="card-title">Cart Summary</h4>
                 <p class="card-text">Number of items: @Model.Count()</p>
                 <p class="card-text">Total: @total.ToString("C2")</p>
-                <div class="form-group">
-                    <label for="discountCode">Discount Code</label>
-                    <input type="text" id="discountCode" class="form-control" />
-                    <button id="applyDiscount" class="btn btn-secondary mt-2">Apply Discount</button>
-                </div>
-                 <form asp-action="Checkout" asp-controller="Cart" method="post">
+                <form asp-action="ApplyDiscount" asp-controller="Cart" method="post">
+                    <div class="form-group">
+                        <label for="discountCode">Discount Code</label>
+                        <input type="text" name="discountCode" id="discountCode" class="form-control" />
+                        <button type="submit" class="btn btn-secondary mt-2">Apply Discount</button>
+                    </div>
+                </form>
+                <form asp-action="Checkout" asp-controller="Cart" method="post">
                     <button type="submit" class="btn btn-primary float-right m-3">Checkout</button>
                 </form>
             </div>

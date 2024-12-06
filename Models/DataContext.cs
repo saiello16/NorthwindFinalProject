@@ -68,6 +68,12 @@ public class DataContext : DbContext
     OrderDetails.AddRange(details);
     SaveChanges();  
   }
+  public void ApplyCartItemDiscount(CartItem updatedCartItem)
+  {
+    CartItem cartItem = CartItems.FirstOrDefault(i => i.CartItemId == updatedCartItem.CartItemId);
+    cartItem.DiscountPercent = updatedCartItem.DiscountPercent;
+    SaveChanges();
+  }
 
   public void RemoveCartItems(int id)
   {
@@ -81,5 +87,5 @@ public class DataContext : DbContext
     CartItem cartitem = CartItems.FirstOrDefault(ci => ci.CartItemId == id);
     CartItems.Remove(cartitem);
     SaveChanges();
-  }
+  } 
 }
